@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ tournament.name }} Draws</title>
+</head>
+<body>
+    <h1>{{ tournament.name }} ({{ tournament.start_date }} – {{ tournament.end_date }})</h1>
+    <h2>Draws</h2>
+    <ul>
+        {% for draw in draws %}
+            <li>{{ draw.age_display }} {{ draw.gender_display }} – {{ draw.category_description }}</li>
+        {% endfor %}
+    </ul>
+    <a href="{{ url_for('tournament_list') }}">← Back to tournaments</a>
+</body>
+</html>
