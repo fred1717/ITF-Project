@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Enter Tournament Match Results</title>
+  <style>
+    label { display: block; margin-top: 10px; }
+    input, select { width: 100%; padding: 8px; margin-top: 4px; }
+    .container { max-width: 800px; margin: 30px auto; padding: 20px; border: 1px solid #ccc; border-radius: 8px; }
+    h2 { text-align: center; }
+    .form-row { display: flex; gap: 10px; }
+    .form-row > div { flex: 1; }
+    .winner-check { margin-top: 20px; display: flex; gap: 10px; align-items: center; }
+    .hidden { display: none; }
+  </style>
+  <script>
+    function toggleTiebreakFields() {
+      const set1_p1 = parseInt(document.getElementById('set1_p1').value || 0);
+      const set1_p2 = parseInt(document.getElementById('set1_p2').value || 0);
+      const set2_p1 = parseInt(document.getElementById('set2_p1').value || 0);
+      const set2_p2 = parseInt(document.getElementById('set2_p2').value || 0);
+
+      const tiebreak1 = document.getElementById('tiebreak1-div');
+      const tiebreak2 = document.getElementById('tiebreak2-div');
+      const superTiebreak = document.getElementById('super-tiebreak-div');
+
+      if ((set1_p1 === 7 && set1_p2 === 6) || (set1_p1 === 6 && set1_p2 === 7)) {
+        tiebreak1.classList.remove('hidden');
+      } else {
+        tiebreak1.classList.add('hidden');
+      }
+
+      if ((set2_p1 === 7 && set2_p2 === 6) || (set2_p1 === 6 && set2_p2 === 7)) {
+        tiebreak2.classList.remove('hidden');
+      } else {
+        tiebreak2.classList.add('hidden');
+      }
+
+      const setsWonP1 = (set1_p1 > set1_p2) + (set2_p1 > set2_p2);
+      const setsWonP2 = (set1_p2 > set1_p1) + (set2_p2 > set2_p1);
+      if (setsWonP1 === 1 && setsWonP2 === 1) {
+        superTiebreak.classList.remove('hidden');
+      } else {
+        superTiebreak.classList.add('hidden');
+      }
+    }
+  </script>
+</head>
+<body>
+  <div class="container">
+    <h2>Enter Match Results</h2>
+    <form method="POST" action="/submit-result">
+
+        <label for="draw">Select Draw</label>
+        <select id="draw" name="draw_id" required>
+            <option value="">-- Select a draw --</option>
+        </select>
+
+        <label>Player 1</label>
+        <input type="text" id="player1" name="player1" readonly>
+
+        <label>Player 2</label>
+        <input type="text" id="player2" name="player2" readonly>
+
+        <div class="form-row">
+            <div>
+                <label for="set1_p1">Set 1 - Player 1</label>
+                <input type="number" id="set1_p1" name="set1_p1" min="0" onchange="toggleTiebreakFields()">
+            </div>
+            <div>
+                <label for="set1_p2">Set 1 - Player 2</label>
+                <input type="number" id="set1_p2" name="set1_p2" min="0" onchange="toggleTiebreakFields()">
+            </div>
+        </div>
+
+        <div id="tiebreak1-div" class="form-row hidden">
+            <div>
+                <label for="tiebreak1_p1">Set 1 Tiebreak - Player 1</label>
+                <input type="number" id="tiebreak1_p1" name="tiebreak1_p1" min="0">
+            </div>
+            <div>
+                <label for="tiebreak1_p2">Set 1 Tiebreak - Player 2</label>
+                <input type="number" id="tiebreak1_p2" name="tiebreak1_p2" min="0">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div>
+                <label for="set2_p1">Set 2 - Player 1</label>
+                <input type="number" id="set2_p1" name="set2_p1" min="0" onchange="toggleTiebreakFields()">
+            </div>
+            <div>
+                <label for="set2_p2">Set 2 - Player 2</label>
+                <input type="number" id="set2_p2" name="set2_p2" min="0" onchange="toggleTiebreakFields()">
+            </div>
+        </div>
+
+        <div id="tiebreak2-div" class="form-row hidden">
+            <div>
+                <label for="tiebreak2_p1">Set 2 Tiebreak - Player 1</label>
+                <input type="number" id="tiebreak2_p1" name="tiebreak2_p1" min="0">
+            </div>
+            <div>
+                <label for="tiebreak2_p2">Set 2 Tiebreak - Player 2</label>
+                <input type="number" id="tiebreak2_p2" name="tiebreak2_p2" min="0">
+            </div>
+        </div>
+
+        <div id="super-tiebreak-div" class="form-row hidden">
+            <div>
+                <label for="super_p1">Super Tiebreak - Player 1</label>
+                <input type="number" id="super_p1" name="super_p1" min="0">
+            </div>
+            <div>
+                <label for="super_p2">Super Tiebreak - Player 2</label>
+                <input type="number" id="super_p2" name="super_p2" min="0">
+            </div>
+        </div>
+
+        <div class="winner-check">
+            <input type="radio" id="winner1" name="winner" value="1" required>
+            <label for="winner1">Player 1 wins</label>
+
+            <input type="radio" id="winner2" name="winner" value="2">
+            <label for="winner2">Player 2 wins</label>
+        </div>
+
+        <label for="status1">Player 1 Status</label>
+        <select id="status1" name="status1" required>
+            <option value="OK">OK</option>
+            <option value="Bye">Bye</option>
+            <option value="Retired">Retired</option>
+            <option value="WO">WO</option>
+            <option value="Disqualified">Disqualified</option>
+        </select>
+
+        <label for="status2">Player 2 Status</label>
+        <select id="status2" name="status2" required>
+            <option value="OK">OK</option>
+            <option value="Bye">Bye</option>
+            <option value="Retired">Retired</option>
+            <option value="WO">WO</option>
+            <option value="Disqualified">Disqualified</option>
+        </select>
+
+        <label for="match_date">Match Date</label>
+        <input type="date" id="match_date" name="match_date" required>
+
+        <button type="submit">Submit Match</button>
+    </form>
+  </div>
+</body>
+</html>
