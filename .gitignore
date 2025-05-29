@@ -134,7 +134,6 @@ ehthumbs.db
 
 # Logs and databases
 *.log
-*.sql
 *.sqlite
 
 # Backup files
