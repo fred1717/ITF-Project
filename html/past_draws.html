@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Past Draws - {{ week }}</title>
+</head>
+<body>
+    <h1>Draws for the week: {{ monday.strftime('%d %B') }}–{{ sunday.strftime('%d %B %Y') }}</h1>
+
+    {% for draw_id, draw in draw_data.items() %}
+        <hr>
+        <h2>{{ draw.info.name }}, {{ draw.info.category_description }}</h2>
+        <p><strong>Draw ID:</strong> {{ draw_id }}</p>
+
+        {% if draw.matches %}
+            {% set current_round = None %}
+            <div>
+            {% for match in draw.matches %}
+                {% if match.round_id != current_round %}
+                    {% if current_round is not none %}</ul>{% endif %}
+                    <h3>Round {{ match.round_id }}</h3>
+                    <ul>
+                    {% set current_round = match.round_id %}
+                {% endif %}
+                <li>
+                    {{ match.player1_name }} ({{ match.status1_code or '' }})
+                    vs
+                    {{ match.player2_name }} ({{ match.status2_code or '' }})
+                    →
+                    {% if match.winner_id == match.player1_id %}
+                        <strong>{{ match.player1_name }}</strong>
+                    {% elif match.winner_id == match.player2_id %}
+                        <strong>{{ match.player2_name }}</strong>
+                    {% else %}
+                        TBD
+                    {% endif %}
+                </li>
+            {% endfor %}
+            </ul>
+            </div>
+        {% else %}
+            <p><em>No matches available for this draw.</em></p>
+        {% endif %}
+    {% endfor %}
+</body>
+</html>
