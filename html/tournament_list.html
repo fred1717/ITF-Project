@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tournaments</title>
+</head>
+<body>
+    <h1>Past and Upcoming Tournaments</h1>
+    <ul>
+        {% for tournament in tournaments %}
+            <li>
+                <a href="{{ url_for('public_draw_view', tournament_id=tournament.tournament_id) }}">
+                    {{ tournament.name }} ({{ tournament.start_date }} – {{ tournament.end_date }})
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
