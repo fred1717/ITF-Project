@@ -177,3 +177,16 @@ node_modules/
 *.tfstate
 *.tfstate.*
 .terraform/
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+*.swp
+*.bak
+*.old
+*.tmp
+*.orig
+*.stackdump
+
+
+
