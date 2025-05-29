@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Draw View - {{ week }}</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    h1, h2 { margin-bottom: 5px; }
+    .draw-block { margin-bottom: 40px; }
+    .round-header { font-weight: bold; font-size: 18px; margin-top: 20px; }
+    .match-block { margin: 10px 0; }
+    .player-line { white-space: pre; }
+    .winner { font-weight: bold; color: green; }
+    .bye { font-style: italic; color: gray; }
+    .score { margin-left: 20px; }
+  </style>
+</head>
+<body>
+  <h1>Draws for the week: {{ monday.strftime('%d %B') }}–{{ sunday.strftime('%d %B %Y') }}</h1>
+
+  {% for draw_id, draw in draw_data.items() %}
+    <div class="draw-block">
+      <h2>{{ draw.info.name }}, {{ draw.info.category_description }}</h2>
+      <p><strong>Draw ID:</strong> {{ draw_id }} – {{ draw.info.draw_code }}</p>
+
+      {% for round_code, matches in draw.rounds.items() %}
+        <div class="round-header">{{ round_code }}</div>
+        {% for match in matches %}
+          <div class="match-block">
+            <div class="player-line {% if match.winner_id == match.player1_id %}winner{% endif %}">
+              {{ match.player1_name }}{% if match.seed1 %} (<strong>{{ match.seed1 }}</strong>){% endif %}
+              {% if match.status1_desc == 'Bye' %}<span class="bye"> - Bye</span>{% endif %}
+              {% if match.sets_p1 %}<span class="score">{{ match.sets_p1 }}</span>{% endif %}
+            </div>
+            <div class="player-line {% if match.winner_id == match.player2_id %}winner{% endif %}">
+              {{ match.player2_name }}{% if match.seed2 %} (<strong>{{ match.seed2 }}</strong>){% endif %}
+              {% if match.status2_desc == 'Bye' %}<span class="bye"> - Bye</span>{% endif %}
+              {% if match.sets_p2 %}<span class="score">{{ match.sets_p2 }}</span>{% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      {% endfor %}
+    </div>
+  {% endfor %}
+</body>
+</html>
