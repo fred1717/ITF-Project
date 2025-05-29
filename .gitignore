@@ -187,5 +187,5 @@ Thumbs.db
 *.orig
 *.stackdump
 
-
-
+# Scripts and config files with sensitive information
+scripts/flask_app.service.txt
