@@ -1,28 +1,28 @@
 # EC2 instance for AppTier in PrivateSub_AZ1 with SSM agent enabled
 resource "aws_instance" "AppTier_Private-ITF_AZ1" {
 
-  # AMI used (Amazon Linux 2023)
-  ami           = "ami-0f88e80871fd81e91"
+  # Amazon Linux 2 AMI (for us-east-1)
+  ami                    = "ami-0f88e80871fd81e91"
 
   # Instance type
-  instance_type = "t2.micro"
+  instance_type          = "t2.micro"
 
-  # Subnet where the instance will be deployed (PrivateSub_AZ1)
-  subnet_id     = "subnet-087fa0f8ccbc50ee1"
+  # Dynamically resolved subnet ID (PrivateSub_AZ1)
+  subnet_id              = data.aws_subnet.app_subnet.id
 
-  # Use existing Elastic IP (optional if already associated manually)
-  associate_public_ip_address = false
+  # Dynamically resolved security group
+  vpc_security_group_ids = [data.aws_security_group.app_sg.id]
 
-  # IAM role with SSM and S3 permissions
-  iam_instance_profile = "EC2SSMRole"
+  # IAM role with SSM and logging permissions
+  iam_instance_profile   = aws_iam_instance_profile.ec2_profile.name
 
-  # Security group for this EC2 instance
-  vpc_security_group_ids = ["sg-09d980b49ea7c9e54"]  # ITF_SG_DR-WebAccess
+  # EC2 key pair for optional SSH access
+  key_name               = "your-key-name"                     # Replace with your EC2 key pair name
 
-  # EC2 user data to install and start the SSM agent on boot
-  user_data = templatefile("${path.module}/scripts/user_data.sh", {})
+  # Reference to external user_data script to enable SSM agent
+  user_data              = templatefile("${path.module}/scripts/user_data.sh", {})
 
-  # Tag for identification
+  # EC2 instance tags
   tags = {
     Name = "AppTier_Private-ITF_AZ1"
   }
