@@ -1,17 +1,14 @@
-# Define input variables 
-variable "vpc_id" {
-    description = "The ID of the VPC where endpoints will be created"
-    type        = string
-}
-
-
-variable "private_subnet_ids" {
-    description = "List of private subnet IDs across AZs" 
-    type        = list(string)
-} 
-
-
-variable "security_group_id" {
-    description = "Security group to attach to the endpoints" 
-    type        = string
+variable "ami_id" {
+    description = "The AMI ID for the EC2 instance" 
+    type = string
+} variable "instance_type" {
+    description = "The type of EC2 instance to launch" 
+    type = string
+    default = "t3.micro"
+} variable "private_subnet_id_az1" {
+    description = "Subnet ID for launching the EC2 instance in AZ1" 
+    type = string
+} variable "vpc_id" {
+    description = "VPC ID where the EC2 instance and security group will be deployed" 
+    type = string
 }
