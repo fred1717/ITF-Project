@@ -30,13 +30,11 @@ resource "aws_vpc_endpoint" "ssmmessages" {
         data.aws_subnet.private_az2.id                      # PrivateSub_AZ2
     ]
 
-    security_group_ids =
-    [
+    security_group_ids = [
         data.aws_security_group.app_sg.id                   # ITF_SG_DR-WebAccess
     ]
 
-    tags =
-    {
+    tags = {
         Name = "VPCE-SSMMessages"
     }
 } 
@@ -50,13 +48,11 @@ resource "aws_vpc_endpoint" "ssm" {
         data.aws_subnet.private_az2.id                      # PrivateSub_AZ2
     ]
 
-    security_group_ids =
-    [
+    security_group_ids = [
         data.aws_security_group.app_sg.id                   # ITF_SG_DR-WebAccess
     ]
 
-    tags =
-    {
+    tags = {
         Name = "VPCE-SSM"
     }
 } 
@@ -70,13 +66,11 @@ resource "aws_vpc_endpoint" "ec2messages" {
         data.aws_subnet.private_az2.id                      # PrivateSub_AZ2
     ]
 
-    security_group_ids =
-    [
+    security_group_ids = [
         data.aws_security_group.app_sg.id                   # ITF_SG_DR-WebAccess
     ]
 
-    tags =
-    {
+    tags = {
         Name = "VPCE-EC2Messages"
     }
 } 
@@ -87,14 +81,12 @@ resource "aws_lb" "app_alb" {
     internal = false
     load_balancer_type = "application" 
     security_groups = [ data.aws_security_group.app_sg.id ]
-    subnets =
-    [
+    subnets = [
         data.aws_subnet.public_az1.id,
         data.aws_subnet.public_az2.id
     ]
 
-    tags =
-    {
+    tags = {
         Name = "ALB-Primary-RegionA"
     }
 }  
@@ -103,8 +95,8 @@ resource "aws_lb" "app_alb" {
 resource "aws_lb_listener" "http_listener" {
     load_balancer_arn = aws_lb.app_alb.arn 
     port = 80
-    protocol = "HTTP" default_action
-    {
+    protocol = "HTTP" 
+    default_action {
         type = "forward" 
         target_group_arn = aws_lb_target_group.app_tg.arn
     }
@@ -116,8 +108,9 @@ resource "aws_lb_target_group" "app_tg" {
     port = 80
     protocol = "HTTP" 
     target_type = "instance"
-    vpc_id = var.vpc_id health_check
-    {
+    vpc_id = var.vpc_id 
+
+    health_check {
         path = "/health" 
         protocol = "HTTP"
         matcher = "200" 
@@ -127,8 +120,7 @@ resource "aws_lb_target_group" "app_tg" {
         unhealthy_threshold = 2
     }
 
-    tags =
-    {
+    tags = {
         Name = "TargetGroup-RegionA"
     }
 }  
