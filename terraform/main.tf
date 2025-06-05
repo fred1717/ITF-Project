@@ -1,3 +1,23 @@
+# Public Subnet AZ1
+data "aws_subnet" "public_az1" {
+  id = "subnet-05eba23bef4be5f45"
+}
+
+# Public Subnet AZ2
+data "aws_subnet" "public_az2" {
+  id = "subnet-008faa4552159667a"
+}
+
+# Private Subnet AZ1
+data "aws_subnet" "private_az1" {
+  id = "subnet-087fa0f8ccbc50ee1"
+}
+
+# Private Subnet AZ2
+data "aws_subnet" "private_az2" {
+  id = "subnet-0e2c62cc284851a28"
+}
+
 # Data source to dynamically fetch the subnet ID by tag and AZ  
 data "aws_subnet" "app_subnet" {
     filter {
