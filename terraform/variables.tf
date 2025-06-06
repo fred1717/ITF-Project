@@ -9,13 +9,32 @@ variable "instance_type" {
     default = "t3.micro"
 } 
 
-variable "private_subnet_id_az1" {
-    description = "Subnet ID for launching the EC2 instance in AZ1" 
-    type = string
-} 
+variable "public_subnet_name_az1" {
+  description = "Name tag for the public subnet in AZ1"
+  type        = string
+}
+
+variable "public_subnet_name_az2" {
+  description = "Name tag for the public subnet in AZ2"
+  type        = string
+}
+
+variable "private_subnet_name_az1" {
+  description = "Name tag of private subnet in AZ1"
+  type        = string
+}
+
+variable "private_subnet_name_az2" {
+  description = "Name tag of private subnet in AZ2"
+  type        = string
+}
+
+variable "app_sg_name" {
+  description = "Name tag of the security group for the EC2 instance"
+  type        = string
+}
 
 variable "vpc_id" {
     description = "VPC ID where the EC2 instance and security group will be deployed" 
     type = string
 }
-
