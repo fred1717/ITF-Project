@@ -67,7 +67,7 @@ resource "aws_security_group" "ssm_allow_https" {
 resource "aws_instance" "AppTier_Private-ITF_AZ1" {
   ami                    = var.ami_id
   instance_type          = var.instance_type
-  subnet_id              = var.private_subnet_id_az1
+  subnet_id              = data.aws_subnet.private_az1.id
   vpc_security_group_ids = [aws_security_group.ssm_allow_https.id]
   iam_instance_profile   = aws_iam_instance_profile.ssm_instance_profile.name
 
