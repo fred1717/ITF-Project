@@ -99,11 +99,24 @@ resource "aws_lb_target_group" "app_tg" {
   }
 }
 
-# ALB Listener
+# ALB Listeners
 resource "aws_lb_listener" "http_listener" {
+ load_balancer_arn = aws_lb.app_alb.arn
+ port              = 80
+ protocol          = "HTTP"
+
+ default_action {
+   type             = "forward"
+   target_group_arn = aws_lb_target_group.app_tg.arn
+ }
+}
+
+resource "aws_lb_listener" "https_listener" {
   load_balancer_arn = aws_lb.app_alb.arn
-  port              = 80
-  protocol          = "HTTP"
+  port              = 443
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-TLS13-1-2-2021-06"
+  certificate_arn   = "arn:aws:acm:us-east-1:180294215772:certificate/201063b7-6a4a-4cc6-93f7-6eef8d0565db"
 
   default_action {
     type             = "forward"

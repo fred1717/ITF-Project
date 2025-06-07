@@ -69,17 +69,15 @@ resource "aws_instance" "AppTier_Private-ITF_AZ1" {
   instance_type          = var.instance_type
   subnet_id              = data.aws_subnet.private_az1.id
   vpc_security_group_ids = [aws_security_group.ssm_allow_https.id]
-  iam_instance_profile   = aws_iam_instance_profile.ssm_instance_profile.name
+  iam_instance_profile   = data.aws_iam_instance_profile.existing_profile.name
 
-  user_data = <<-EOF
-              #!/bin/bash
-              yum update -y
-              yum install -y amazon-ssm-agent
-              systemctl enable amazon-ssm-agent
-              systemctl start amazon-ssm-agent
-              EOF
+  user_data = templatefile("${path.module}/scripts/user_data.sh", {})
 
   tags = {
     Name = "AppTier_Private-ITF_AZ1"
   }
+}
+
+data "aws_iam_instance_profile" "existing_profile" {
+  name = var.instance_profile_name
 }

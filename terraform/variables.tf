@@ -38,3 +38,8 @@ variable "vpc_id" {
     description = "VPC ID where the EC2 instance and security group will be deployed" 
     type = string
 }
+
+variable "instance_profile_name" {
+  description = "Name of the existing IAM instance profile used for SSM access"
+  type        = string
+}
