@@ -43,3 +43,8 @@ variable "instance_profile_name" {
   description = "Name of the existing IAM instance profile used for SSM access"
   type        = string
 }
+
+variable "aws_region" {
+  description = "AWS region to deploy resources"
+  type        = string
+}

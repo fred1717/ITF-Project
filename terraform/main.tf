@@ -130,3 +130,38 @@ resource "aws_lb_target_group_attachment" "app_tg_attachment" {
   target_id        = aws_instance.AppTier_Private-ITF_AZ1.id
   port             = 80
 }
+
+# Get VPC details using var.vpc_id (used in VPC endpoint resources below)
+data "aws_vpc" "selected" {
+  id = var.vpc_id
+}
+
+# VPC Endpoint for SSM
+resource "aws_vpc_endpoint" "ssm" {
+  vpc_id             = data.aws_vpc.selected.id
+  service_name       = "com.amazonaws.${var.aws_region}.ssm"
+  vpc_endpoint_type  = "Interface"
+  subnet_ids         = [data.aws_subnet.private_az1.id, data.aws_subnet.private_az2.id]
+  security_group_ids = [aws_security_group.ssm_allow_https.id]
+  private_dns_enabled = true
+}
+
+# VPC Endpoint for SSMMessages
+resource "aws_vpc_endpoint" "ssmmessages" {
+  vpc_id             = data.aws_vpc.selected.id
+  service_name       = "com.amazonaws.${var.aws_region}.ssmmessages"
+  vpc_endpoint_type  = "Interface"
+  subnet_ids         = [data.aws_subnet.private_az1.id, data.aws_subnet.private_az2.id]
+  security_group_ids = [aws_security_group.ssm_allow_https.id]
+  private_dns_enabled = true
+}
+
+# VPC Endpoint for EC2Messages
+resource "aws_vpc_endpoint" "ec2messages" {
+  vpc_id             = data.aws_vpc.selected.id
+  service_name       = "com.amazonaws.${var.aws_region}.ec2messages"
+  vpc_endpoint_type  = "Interface"
+  subnet_ids         = [data.aws_subnet.private_az1.id, data.aws_subnet.private_az2.id]
+  security_group_ids = [aws_security_group.ssm_allow_https.id]
+  private_dns_enabled = true
+}
