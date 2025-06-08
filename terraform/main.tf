@@ -178,22 +178,3 @@ resource "aws_vpc_endpoint" "ec2messages" {
   security_group_ids = [aws_security_group.ssm_allow_https.id]
   private_dns_enabled = true
 }
-
-# Route entries for SSM VPC endpoints
-resource "aws_route" "ssm_endpoint_route" {
-  route_table_id             = data.aws_route_table.private.id
-  destination_prefix_list_id = aws_vpc_endpoint.ssm.prefix_list_id
-  vpc_endpoint_id            = aws_vpc_endpoint.ssm.id
-}
-
-resource "aws_route" "ssmmessages_endpoint_route" {
-  route_table_id             = data.aws_route_table.private.id
-  destination_prefix_list_id = aws_vpc_endpoint.ssmmessages.prefix_list_id
-  vpc_endpoint_id            = aws_vpc_endpoint.ssmmessages.id
-}
-
-resource "aws_route" "ec2messages_endpoint_route" {
-  route_table_id             = data.aws_route_table.private.id
-  destination_prefix_list_id = aws_vpc_endpoint.ec2messages.prefix_list_id
-  vpc_endpoint_id            = aws_vpc_endpoint.ec2messages.id
-}
