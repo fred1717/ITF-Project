@@ -60,6 +60,19 @@ data "aws_security_group" "app_sg" {
   }
 }
 
+# Lookup for the private route table using tag Name = "PrivateRouteTable"
+data "aws_route_table" "private" {
+  filter {
+    name   = "tag:Name"
+    values = ["PrivateRouteTable"]
+  }
+
+  filter {
+    name   = "vpc-id"
+    values = [var.vpc_id]
+  }
+}
+
 # ALB
 # Application Load Balancer (ALB)
 resource "aws_lb" "app_alb" {
@@ -164,4 +177,23 @@ resource "aws_vpc_endpoint" "ec2messages" {
   subnet_ids         = [data.aws_subnet.private_az1.id, data.aws_subnet.private_az2.id]
   security_group_ids = [aws_security_group.ssm_allow_https.id]
   private_dns_enabled = true
+}
+
+# Route entries for SSM VPC endpoints
+resource "aws_route" "ssm_endpoint_route" {
+  route_table_id             = data.aws_route_table.private.id
+  destination_prefix_list_id = aws_vpc_endpoint.ssm.prefix_list_id
+  vpc_endpoint_id            = aws_vpc_endpoint.ssm.id
+}
+
+resource "aws_route" "ssmmessages_endpoint_route" {
+  route_table_id             = data.aws_route_table.private.id
+  destination_prefix_list_id = aws_vpc_endpoint.ssmmessages.prefix_list_id
+  vpc_endpoint_id            = aws_vpc_endpoint.ssmmessages.id
+}
+
+resource "aws_route" "ec2messages_endpoint_route" {
+  route_table_id             = data.aws_route_table.private.id
+  destination_prefix_list_id = aws_vpc_endpoint.ec2messages.prefix_list_id
+  vpc_endpoint_id            = aws_vpc_endpoint.ec2messages.id
 }
