@@ -48,3 +48,8 @@ variable "aws_region" {
   description = "AWS region to deploy resources"
   type        = string
 }
+
+variable "project_name" {
+  description = "Prefix to use for named AWS resources"
+  type        = string
+}

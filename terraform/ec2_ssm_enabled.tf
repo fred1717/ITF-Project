@@ -1,8 +1,3 @@
-# Provider Configuration
-provider "aws" {
-  region = "us-east-1"  # Change as needed
-}
-
 terraform {
   required_providers {
     aws = {
@@ -67,8 +62,14 @@ resource "aws_security_group" "ssm_allow_https" {
 resource "aws_instance" "AppTier_Private-ITF_AZ1" {
   ami                    = var.ami_id
   instance_type          = var.instance_type
-  subnet_id = data.aws_subnet.private_az1.id 
-  vpc_security_group_ids = [ data.aws_security_group.app_sg.id, aws_security_group.ssm_allow_https.id ]
+  # subnet_id = data.aws_subnet.private_az1.id 
+  subnet_id = data.aws_subnet.public_az1.id
+  vpc_security_group_ids = [
+    data.aws_security_group.app_sg.id,
+    aws_security_group.ssm_allow_https.id,
+    aws_security_group.allow_ssh.id
+  ]
+
   iam_instance_profile   = data.aws_iam_instance_profile.existing_profile.name
 
   user_data = templatefile("${path.module}/scripts/user_data.sh", {})

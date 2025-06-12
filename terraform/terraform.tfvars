@@ -1,0 +1,11 @@
+ami_id = "ami-0f88e80871fd81e91"  # Replace with a valid Amazon Linux 2 AMI for your region
+instance_type = "t3.micro"
+private_subnet_name_az1	= "ITF_PrivateSub_AZ1"
+private_subnet_name_az2 = "ITF_PrivateSub_AZ2"
+public_subnet_name_az1  = "ITF_PublicSub_AZ1"
+public_subnet_name_az2  = "ITF_PublicSub_AZ2"
+vpc_id = "vpc-08f94ba54ced6f05d"      # Replace with your actual VPC ID
+app_sg_name = "ITF_SG_DR-WebAccess"
+instance_profile_name = "ec2_ssm_instance_profile"  # Name of the IAM instance profile for SSM access
+aws_region = "us-east-1"
+project_name = "itf-project"

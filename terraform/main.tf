@@ -1,3 +1,8 @@
+# Provider Configuration
+provider "aws" {
+  region = var.aws_region
+}
+
 # Fetch subnets dynamically
 # Public Subnet AZ1
 data "aws_subnet" "public_az1" {
@@ -47,6 +52,19 @@ data "aws_subnet" "private_az2" {
   }
 }
 
+# IGW Lookup
+data "aws_internet_gateway" "itf" {
+  filter {
+    name   = "tag:Name"
+    values = ["IGW_ITF"]
+  }
+
+  filter {
+    name   = "attachment.vpc-id"
+    values = [var.vpc_id]
+  }
+}
+
 # Fetch security group dynamically
 # Data source to dynamically fetch the security group ID by group name
 data "aws_security_group" "app_sg" {
@@ -60,6 +78,41 @@ data "aws_security_group" "app_sg" {
   }
 }
 
+# Security group to allow SSH access from anywhere and HTTPS between VPC endpoints and EC2
+resource "aws_security_group" "allow_ssh" {
+  name        = "${var.project_name}-sg"
+  description = "Allow SSH and HTTPS for EC2 and VPC endpoints"
+  vpc_id      = var.vpc_id
+
+  ingress {
+    description = "Allow SSH from anywhere"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description     = "Allow HTTPS from same security group (EC2 to VPC endpoint)"
+    from_port       = 443
+    to_port         = 443
+    protocol        = "tcp"
+    security_groups = [data.aws_security_group.app_sg.id]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "${var.project_name}-sg"
+  }
+}
+
+
 # Lookup for the private route table using tag Name = "PrivateRouteTable"
 data "aws_route_table" "private" {
   filter {
@@ -70,6 +123,19 @@ data "aws_route_table" "private" {
   filter {
     name   = "vpc-id"
     values = [var.vpc_id]
+  }
+}
+
+# Lookup for the main (public) route table dynamically
+data "aws_route_table" "public_main" {
+  filter {
+    name   = "vpc-id"
+    values = [var.vpc_id]
+  }
+
+  filter {
+    name   = "association.main"
+    values = ["true"]
   }
 }
 
